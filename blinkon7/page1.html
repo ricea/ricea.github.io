@@ -53,7 +53,6 @@ let trigger = document.querySelector('#trigger');
 trigger.onclick = async () => {
   trigger.disabled = true;
   trigger.onclick = undefined;
-  document.querySelector('#next').style.display = 'block';
   const streamingElement =
     document.querySelector('#target');
   const response = await fetch('code.html',
@@ -61,6 +60,9 @@ trigger.onclick = async () => {
 
   response.body
     .pipeThrough(new TextDecoder())
-    .pipeTo(streamingElement.writable);
+    .pipeTo(streamingElement.writable)
+    .then(() => {
+      document.querySelector('#next').style.display = 'block';
+    });
 };
 </script>
