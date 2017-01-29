@@ -1,16 +1,56 @@
+<!DOCTYPE html>
 <title>Demo 1</title>
 <script src="streaming-element.js"></script>
+<style>
+  body {
+    font-size: 36pt;
+    font-family: sans-serif;
+  }
+
+  button {
+    font-size: inherit;
+  }
+
+  #next {
+    text-align: right;
+    display: none;
+  }
+  
+  .code {
+    background-color: rgb(245, 242, 240);
+    padding: 16px 16px 16px 16px;
+  }
+
+  .keyword {
+    color: #7f007f;
+  }
+
+  .type {
+    color: #228b22;
+  }
+
+  .variable-name {
+    color: #a0522d;
+  }
+
+  .string {
+    color: #8b2252;
+  }
+  
+</style>
+
 <div><button id="trigger">Trigger</button>
 <div><streaming-element id="target"></streaming-element>
-<div>&uparrow;&uparrow; &lt;streaming-element&gt; IS HERE &uparrow;&uparrow;
+<div>&uparrow;&uparrow; <code>&lt;streaming-element&gt;</code> IS HERE &uparrow;&uparrow;
 
 <script>
 let trigger = document.querySelector('#trigger');
 trigger.onclick = async () => {
   trigger.disabled = true;
   trigger.onclick = undefined;
-  const streamingElement = document.querySelector('#target');
-  const response = await fetch('streaming-element-example.html',
+  const streamingElement =
+    document.querySelector('#target');
+  const response = await fetch('code.html',
                                {mode: 'no-cors'});
 
   response.body
