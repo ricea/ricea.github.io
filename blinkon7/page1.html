@@ -1,0 +1,17 @@
+<title>Demo 1</title>
+<script src="streaming-element.js"></script>
+<div><button id="trigger">Trigger</button>
+<div><streaming-element id="target"></streaming-element>
+<div>&uparrow;&uparrow; &lt;streaming-element&gt; IS HERE &uparrow;&uparrow;
+
+<script>
+document.querySelector('#trigger').addEventListener('click', async () => {
+  const streamingElement = document.querySelector('#target');
+  const response = await fetch('streaming-element-example.html',
+{mode: 'no-cors'});
+
+  response.body
+    .pipeThrough(new TextDecoder())
+    .pipeTo(streamingElement.writable);
+});
+</script>
