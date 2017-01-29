@@ -14,6 +14,11 @@
   #next {
     text-align: right;
     display: none;
+    font-size: 24pt;
+  }
+
+  #next a {
+    text-decoration-line: none;
   }
   
   .code {
@@ -39,15 +44,16 @@
   
 </style>
 
-<div><button id="trigger">Trigger</button>
-<div><streaming-element id="target"></streaming-element>
-<div>&uparrow;&uparrow; <code>&lt;streaming-element&gt;</code> IS HERE &uparrow;&uparrow;
-
+<div><button id="trigger">Trigger</button></div>
+<div><streaming-element id="target"></streaming-element></div>
+<div>&uparrow;&uparrow; <code>&lt;streaming-element&gt;</code> IS HERE &uparrow;&uparrow;</div>
+<div id=next><a href=page2.html>Next >>></a></div>
 <script>
 let trigger = document.querySelector('#trigger');
 trigger.onclick = async () => {
   trigger.disabled = true;
   trigger.onclick = undefined;
+  document.querySelector('#next').style.display = 'block';
   const streamingElement =
     document.querySelector('#target');
   const response = await fetch('code.html',
