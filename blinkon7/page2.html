@@ -1,30 +1,39 @@
 <!DOCTYPE html>
-<title>Demo 1</title>
+<title>Demo 2</title>
 <script src="streaming-element.js"></script>
 <script src="common.js"></script>
 <link rel=stylesheet href="common.css">
 <style>
-  .code {
-    background-color: rgb(245, 242, 240);
-    padding: 16px 16px 16px 16px;
+  .smaller {
+  font-size: 24pt;
   }
 
-  .keyword {
-    color: #7f007f;
+  .much-smaller {
+  font-size: 18pt;
   }
 
-  .type {
-    color: #228b22;
+  #lo-tab {
+  font-size: 18pt;
+  border: solid 2px black;
+  border-collapse: collapse;
   }
 
-  .variable-name {
-    color: #a0522d;
+  #lo-tab td {
+  border: solid 2px #888;
+  padding: 9pt;
   }
 
-  .string {
-    color: #8b2252;
+  #left-top {
+  color: #44f;
   }
-  
+
+  #right-top {
+  color: #f44;
+  }
+
+  #bottom {
+  color: #0e0;
+  }
 </style>
 
 <table id=button-table>
@@ -33,7 +42,6 @@
     <td align=right id=next><a href=page2.html>Next >>></a>
 </table>
 <div><streaming-element id="target"></streaming-element></div>
-<div>&uparrow;&uparrow; <code>&lt;streaming-element&gt;</code> IS HERE &uparrow;&uparrow;</div>
 <script>
-loadOnTrigger('code.html');
+loadOnTrigger('lorem.html');
 </script>
