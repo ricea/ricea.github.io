@@ -8,11 +8,9 @@ function loadOnTrigger(url) {
     const response = await fetch(url,
                                  {mode: 'no-cors'});
     
-    response.body
+    await response.body
       .pipeThrough(new TextDecoder())
-      .pipeTo(streamingElement.writable)
-      .then(() => {
-        document.querySelector('#next').style.visibility = 'visible';
-      });
+      .pipeTo(streamingElement.writable);
+    document.querySelector('#next').style.visibility = 'visible';
   };
 }
