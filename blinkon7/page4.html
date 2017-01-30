@@ -4,6 +4,7 @@
 <script src="common.js"></script>
 <script src="parse-json.js"></script>
 <script src="split-stream.js"></script>
+<script src="escape.js"></script>
 <link rel=stylesheet href="common.css">
 <link rel=stylesheet href="code.css">
 <style>
@@ -30,19 +31,13 @@
 <table id=button-table>
   <tr>
     <td><button id="streaming">json &rightarrow; stream</button>
-    <td align=right id=next><a href=page3.html>Next >>></a>
+    <td align=right id=next><a href=page5.html>Next >>></a>
 </table>
 <div><streaming-element id="target"></streaming-element></div>
 <script>
 let streaming = document.querySelector('#streaming');
 let streamingElement = document.querySelector('#target');
 document.querySelector('#next').style.visibility = 'visible';
-
-function encodeSpecial(string) {
-  string.replace('&', '&amp;');
-  string.replace('<', '&lt;');
-  return string;
-}
 
 async function fetchThenJsonStream() {
   const result = await fetch('bugs.json',
@@ -58,7 +53,7 @@ async function fetchThenJsonStream() {
     },
     transform(chunk, controller) {
       controller.enqueue('<tr><td>' +
-                         chunk.map(s => encodeSpecial(s)).join('<td>'));
+                         chunk.map(s => escape(s)).join('<td>'));
     },
     flush(controller) {
       controller.enqueue('</table>');
