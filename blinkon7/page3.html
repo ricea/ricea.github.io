@@ -40,7 +40,12 @@ function resetTarget() {
 async function fetchThenInnerHTML() {
   const bulk = document.createElement('div');
   target.appendChild(bulk);
-  const body = await fetch('bugs.html', {mode: 'no-cors'})
+  const body = await fetch('bugs.html', {
+    mode: 'same-origin',
+    headers: {
+      'Cache-Control': 'no-cache, no-store'
+    }
+  })
     .then(response => response.text());
   bulk.innerHTML = body;
 }
@@ -48,7 +53,12 @@ async function fetchThenInnerHTML() {
 async function fetchThenStream() {
   const streamingElement = document.createElement('streaming-element');
   target.appendChild(streamingElement);
-  const result = await fetch('bugs.html', {mode: 'no-cors'});
+  const result = await fetch('bugs.html', {
+    mode: 'same-origin',
+    headers: {
+      'Cache-Control': 'no-cache, no-store'
+    }
+  });
   return result.body
     .pipeThrough(new TextDecoder())
     .pipeTo(streamingElement.writable);
