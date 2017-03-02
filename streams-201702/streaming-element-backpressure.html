@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<title>Streaming Element with backpressure demo</title>
+<script src="transform-stream-polyfill.js"></script>
+<script src="text-encode-transform.js"></script>
+<script src="streaming-element-backpressure.js"></script>
+<link rel=stylesheet href="common.css">
+<link rel=stylesheet href="jank-meter.css">
+<style>
+#commits {
+    font-size: 16pt;
+}
+
+#commits th {
+    text-align: left;
+    padding: 2pt 4pt 2pt 4pt;
+}
+
+#commits tr:nth-child(even) {
+    background-color: rgb(248, 248, 248);
+}
+
+#commits td {
+    padding: 2pt 4pt 2pt 4pt;
+}
+
+#commits td:first-child {
+    font-family: Consolas, monospace;
+    font-size: 0.9em;
+}
+</style>
+<h1>Streaming Element with backpressure demo</h1>
+<div id=buttons>
+  <button id="load">Load HTML stream, applying backpressure</button>
+  <button id="reset">Reset</button>
+</div>
+<div id=jank-meter>JANK METER</div>
+<streaming-element id=target></streaming-element>
+<script>
+const loadButton = document.querySelector('#load');
+const resetButton = document.querySelector('#reset');
+const target = document.querySelector('#target');
+
+loadButton.onclick = async () => {
+  loadButton.disabled = true;
+  const streamingElement = document.createElement('streaming-element-backpressure');
+  target.appendChild(streamingElement);
+  const response = await fetch('commits.html',
+                               {mode: 'no-cors'});
+
+  await response.body
+      .pipeThrough(new TextDecoder())
+      .pipeTo(streamingElement.writable);
+};
+
+resetButton.onclick = () => {
+  while (target.firstChild) {
+    target.removeChild(target.firstChild);
+  }
+  loadButton.disabled = false;
+}
+
+</script>
