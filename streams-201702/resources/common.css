@@ -21,3 +21,7 @@ h1 {
 table {
     border-collapse: collapse;
 }
+
+fetch-code-with-progress {
+    font-family: Consolas, monospace;
+}

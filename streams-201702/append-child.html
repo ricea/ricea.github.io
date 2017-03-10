@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <title>Append Child WritableStream demo</title>
-<script src="transform-stream-polyfill.js"></script>
-<script src="text-encode-transform.js"></script>
-<script src="parse-json.js"></script>
-<script src="split-stream.js"></script>
-<link rel=stylesheet href="common.css">
-<link rel=stylesheet href="commits.css">
+<script src="transforms/transform-stream-polyfill.js"></script>
+<script src="transforms/text-encode-transform.js"></script>
+<script src="transforms/parse-json.js"></script>
+<script src="transforms/split-stream.js"></script>
+<script src="tags/streaming-element-backpressure.js"></script>
+<script src="tags/fetch-code-with-progress.js"></script>
+<link rel=stylesheet href="resources/common.css">
+<link rel=stylesheet href="resources/commits.css">
 <h1>Append Child WritableStream demo</h1>
 <div id=buttons>
   <button id="load">Load JSON stream</button>
   <button id="reset">Reset</button>
+  <button id="view_source">View Source</button>
 </div>
+<fetch-code-with-progress id=source></fetch-code-with-progress>
 <div id=target></div>
 <script>
 const loadButton = document.querySelector('#load');
 const resetButton = document.querySelector('#reset');
+const viewSourceButton = document.querySelector('#view_source');
+const sourceElement = document.querySelector('#source');
 const target = document.querySelector('#target');
 const FIELDS =  ['Hash', 'Date', 'Author', 'Subject'];
 const FIELDS_LOWERCASE = FIELDS.map(string => string.toLowerCase());
@@ -55,7 +61,7 @@ async function fetchThenJsonToDom() {
     }
   });
 
-  const result = await fetch('commits.json',
+  const result = await fetch('data/commits.json',
                              {
                                mode: 'same-origin',
                                headers: {
@@ -80,6 +86,11 @@ resetButton.onclick = () => {
     target.removeChild(target.firstChild);
   }
   loadButton.disabled = false;
+  sourceElement.reset();
+}
+
+viewSourceButton.onclick = () => {
+  sourceElement.load('source/append-child-source.js');
 }
 
 </script>

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <title>Streaming Element demo</title>
-<script src="transform-stream-polyfill.js"></script>
-<script src="text-encode-transform.js"></script>
-<script src="streaming-element.js"></script>
-<link rel=stylesheet href="common.css">
-<link rel=stylesheet href="jank-meter.css">
-<link rel=stylesheet href="commits.css">
+<script src="transforms/transform-stream-polyfill.js"></script>
+<script src="transforms/text-encode-transform.js"></script>
+<script src="tags/streaming-element.js"></script>
+<link rel=stylesheet href="resources/common.css">
+<link rel=stylesheet href="resources/jank-meter.css">
+<link rel=stylesheet href="resources/commits.css">
 <h1>Streaming Element demo</h1>
 <div id=buttons>
   <button id="load">Load HTML stream</button>
@@ -22,7 +22,7 @@ loadButton.onclick = async () => {
   loadButton.disabled = true;
   const streamingElement = document.createElement('streaming-element');
   target.appendChild(streamingElement);
-  const response = await fetch('commits.html',
+  const response = await fetch('data/commits.html',
                                {mode: 'no-cors'});
 
   await response.body
