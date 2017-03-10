@@ -60,6 +60,7 @@ customElements.define('fetch-code-with-progress', class FetchCodeWithProgress ex
         }
         moveBar(`${width}%`, 100);
       }
+
       function barDone() {
         moveBar('100%', 100);
         progressBarBar.animate({
@@ -69,6 +70,7 @@ customElements.define('fetch-code-with-progress', class FetchCodeWithProgress ex
           fill: 'forwards'
         });
       }
+
       barUpdate();
       response.body
           .pipeThrough(new TransformStream({
@@ -90,5 +92,9 @@ customElements.define('fetch-code-with-progress', class FetchCodeWithProgress ex
         this.removeChild(this.lastElementChild);
       }
     }
+  }
+
+  connectedCallback() {
+    this.style.display = 'block';
   }
 });

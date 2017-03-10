@@ -1,0 +1,21 @@
+<div class="highlight"><pre><span class="kr">const</span> <span class="nx">jsonToElementTransform</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TransformStream</span><span class="p">({</span>
+  <span class="nx">transform</span><span class="p">(</span><span class="nx">chunk</span><span class="p">,</span> <span class="nx">controller</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kr">const</span> <span class="nx">tr</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;tr&#39;</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kr">const</span> <span class="nx">cell</span> <span class="nx">of</span> <span class="p">[</span><span class="s1">&#39;hash&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;subject&#39;</span><span class="p">])</span> <span class="p">{</span>
+      <span class="kr">const</span> <span class="nx">td</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">);</span>
+      <span class="nx">td</span><span class="p">.</span><span class="nx">textContent</span> <span class="o">=</span> <span class="nx">chunk</span><span class="p">[</span><span class="nx">cell</span><span class="p">];</span>
+      <span class="nx">tr</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">td</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nx">controller</span><span class="p">.</span><span class="nx">enqueue</span><span class="p">(</span><span class="nx">tr</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="kr">const</span> <span class="nx">response</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">fetch</span><span class="p">(</span><span class="s1">&#39;commits.json&#39;</span><span class="p">);</span>
+
+<span class="nx">response</span><span class="p">.</span><span class="nx">body</span>
+    <span class="p">.</span><span class="nx">pipeThrough</span><span class="p">(</span><span class="k">new</span> <span class="nx">TextDecoder</span><span class="p">())</span>
+    <span class="p">.</span><span class="nx">pipeThrough</span><span class="p">(</span><span class="nx">splitStream</span><span class="p">(</span><span class="s1">&#39;\n&#39;</span><span class="p">))</span>
+    <span class="p">.</span><span class="nx">pipeThrough</span><span class="p">(</span><span class="nx">parseJSON</span><span class="p">())</span>
+    <span class="p">.</span><span class="nx">pipeThrough</span><span class="p">(</span><span class="nx">jsonToElementTransform</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">pipeTo</span><span class="p">(</span><span class="nx">appendChildWritableStream</span><span class="p">(</span><span class="nx">table</span><span class="p">));</span>
+</pre></div>

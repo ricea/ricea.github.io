@@ -10,9 +10,9 @@ const jsonToElementTransform = new TransformStream({
   }
 });
 
-const result = await fetch('commits.json');
+const response = await fetch('commits.json');
 
-result.body
+response.body
     .pipeThrough(new TextDecoder())
     .pipeThrough(splitStream('\n'))
     .pipeThrough(parseJSON())

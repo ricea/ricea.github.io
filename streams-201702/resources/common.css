@@ -22,6 +22,9 @@ table {
     border-collapse: collapse;
 }
 
-fetch-code-with-progress {
+.highlight {
+    border: 1px solid #ddd;
+    padding: 14pt 28pt 14pt 28pt;
     font-family: Consolas, monospace;
+    background-color: #f8f8f8;
 }
