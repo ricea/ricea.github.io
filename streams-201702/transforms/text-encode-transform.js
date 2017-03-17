@@ -70,7 +70,7 @@
       return this._realDecoder.ignoreBOM;
     }
 
-    decode(input = '', options = {}) {
+    decode(input = undefined, options = {}) {
       if (this._transform !== undefined) {
         // Do not permit encode() if readable or writable are locked.
         this._transform.readable.getReader().releaseLock();

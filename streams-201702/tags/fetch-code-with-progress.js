@@ -44,7 +44,7 @@ customElements.define('fetch-code-with-progress', class FetchCodeWithProgress ex
       }
       moveBar('10%', 1);
       const response = await fetch(url);
-      let expectedSize = parseInt(response.headers.get('Content-Length'));
+      let expectedSize = parseInt(response.headers.get('Content-Length'), 10);
       if (response.headers.get('Content-Encoding') === 'gzip') {
         expectedSize = expectedSize * EXPECTED_GZIP_COMPRESSION_FACTOR;
       }
