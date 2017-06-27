@@ -24,9 +24,15 @@ customElements.define('streaming-element-backpressure',
 
     let idlePromise;
     let charactersWrittenInThisChunk = 0;
-    const MS_PER_FRAME = 1000 / 60;
-    // This is dynamically adjusted downwards if frames are skipped.
+    // Sometimes the browser will decide to target 30fps and nothing we do will
+    // make it change its mind. To avoid bad behaviour in this case,
+    // always target 30fps.
+    const MS_PER_FRAME = 1000/30;
+    // This is dynamically adjusted according to the measured wait time.
     let charactersPerChunk = 4096;
+    // Smooth over several frames to avoid overcorrection for outliers.
+    let lastFewFrames = [];
+    const FRAMES_TO_SMOOTH_OVER = 3;
 
     function startNewChunk() {
       idlePromise = new Promise(resolve => {
@@ -59,10 +65,13 @@ customElements.define('streaming-element-backpressure',
             const timeBeforeWait = performance.now();
             await idlePromise;
             const timeElapsed = performance.now() - timeBeforeWait;
-            if (timeElapsed >= MS_PER_FRAME * 2 && charactersPerChunk > 256) {
-              // This is a bit too aggressive.
-              charactersPerChunk = Math.ceil(charactersPerChunk * MS_PER_FRAME / timeElapsed);
+            lastFewFrames.push(timeElapsed);
+            if (lastFewFrames.length > FRAMES_TO_SMOOTH_OVER) {
+              lastFewFrames.shift();
             }
+            const averageTimeElapsed = lastFewFrames.reduce((acc, val) => acc + val) / lastFewFrames.length;
+            charactersPerChunk = Math.max(256, Math.ceil(charactersPerChunk * MS_PER_FRAME / averageTimeElapsed));
+            console.log(`timeElapsed = ${timeElapsed}, averageTimeElapsed = ${averageTimeElapsed}, charactersPerChunk = ${charactersPerChunk}`);
             startNewChunk();
           }
         }
