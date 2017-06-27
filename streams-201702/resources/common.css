@@ -8,7 +8,14 @@ button {
 }
 
 #buttons {
-    margin-bottom: 14pt;
+    margin: 14pt 0;
+}
+
+#back-to-index {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: smaller;
 }
 
 h1 {
@@ -16,6 +23,11 @@ h1 {
     font-family: Rockwell, Georgia, serif;
     font-size: 1.333em;
     color: #3c790a;
+    margin-top: 10px;
+}
+
+dd {
+  margin-bottom: 1em;
 }
 
 table {
