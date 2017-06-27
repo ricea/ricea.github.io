@@ -24,8 +24,9 @@ customElements.define('streaming-element-backpressure',
 
     let idlePromise;
     let charactersWrittenInThisChunk = 0;
-    // Magic number that works in one case on one machine.
-    const charactersPerChunk = 4096;
+    const MS_PER_FRAME = 1000 / 60;
+    // This is dynamically adjusted downwards if frames are skipped.
+    let charactersPerChunk = 4096;
 
     function startNewChunk() {
       idlePromise = new Promise(resolve => {
@@ -43,6 +44,8 @@ customElements.define('streaming-element-backpressure',
       async write(chunk) {
         if (idlePromise === undefined) {
           startNewChunk();
+          await idlePromise;
+          startNewChunk();
         }
         let iframe = await iframeReady;
         let cursor = 0;
@@ -53,7 +56,13 @@ customElements.define('streaming-element-backpressure',
           cursor += writeCharacters;
           charactersWrittenInThisChunk += writeCharacters;
           if (charactersWrittenInThisChunk === charactersPerChunk) {
+            const timeBeforeWait = performance.now();
             await idlePromise;
+            const timeElapsed = performance.now() - timeBeforeWait;
+            if (timeElapsed >= MS_PER_FRAME * 2 && charactersPerChunk > 256) {
+              // This is a bit too aggressive.
+              charactersPerChunk = Math.ceil(charactersPerChunk * MS_PER_FRAME / timeElapsed);
+            }
             startNewChunk();
           }
         }
