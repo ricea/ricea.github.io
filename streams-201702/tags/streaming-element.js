@@ -16,6 +16,11 @@
 customElements.define('streaming-element', class StreamingElement extends HTMLElement {
   constructor() {
     super();
+    this.reset();
+  }
+
+  reset() {
+    this.innerHTML = '';
 
     const iframeReady = new Promise(resolve => {
       const iframe = document.createElement('iframe');

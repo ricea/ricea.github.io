@@ -6,25 +6,21 @@
 <script src="transforms/text-encode-transform.js"></script>
 <script src="transforms/parse-json.js"></script>
 <script src="transforms/split-stream.js"></script>
-<script src="tags/streaming-element-backpressure.js"></script>
-<script src="tags/fetch-code-with-progress.js"></script>
+<script src="resources/highlight.pack.js"></script>
 <script src="tags/view-source.js"></script>
 
 <link rel=stylesheet href="resources/common.css">
 <link rel=stylesheet href="resources/commits.css">
-<link rel=stylesheet href="resources/pygments.css">
 
 <h1>Append child writable stream demo</h1>
 <a id=back-to-index href=index.html>Back to demo index</a>
-
-<view-source src="source/append-child-sample.html"></view-source>
+<view-source></view-source>
 
 <div id=buttons>
   <button id="load">Load JSON stream</button>
   <button id="reset">Reset</button>
 </div>
 
-<fetch-code-with-progress id=source></fetch-code-with-progress>
 <div id=target></div>
 
 <script>
@@ -34,14 +30,6 @@ const resetButton = document.querySelector('#reset');
 const target = document.querySelector('#target');
 const FIELDS =  ['Hash', 'Date', 'Author', 'Subject'];
 const FIELDS_LOWERCASE = FIELDS.map(string => string.toLowerCase());
-
-function appendChildWritableStream(parentNode) {
-  return new WritableStream({
-    write(chunk) {
-      parentNode.appendChild(chunk);
-    }
-  });
-}
 
 function createTable(parentElement) {
   const table = document.createElement('table');
@@ -57,8 +45,16 @@ function createTable(parentElement) {
   return table;
 }
 
+// BEGIN SOURCE TO VIEW
+function appendChildWritableStream(parentNode) {
+  return new WritableStream({
+    write(chunk) {
+      parentNode.appendChild(chunk);
+    }
+  });
+}
+
 async function fetchThenJSONToDOM() {
-  loadButton.disabled = true;
   const jsonToElementTransform = new TransformStream({
     transform(chunk, controller) {
       const tr = document.createElement('tr');
@@ -78,6 +74,7 @@ async function fetchThenJSONToDOM() {
                                  'Cache-Control': 'no-cache, no-store'
                                }
                              });
+
   const table = createTable(target);
   return response.body
     .pipeThrough(new TextDecoder())
@@ -86,8 +83,10 @@ async function fetchThenJSONToDOM() {
     .pipeThrough(jsonToElementTransform)
     .pipeTo(appendChildWritableStream(table));
 }
+// END SOURCE TO VIEW
 
 loadButton.onclick = () => {
+  loadButton.disabled = true;
   setTimeout(fetchThenJSONToDOM, 0);
 };
 

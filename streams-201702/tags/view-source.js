@@ -13,69 +13,100 @@
 // limitations under the License.
 'use strict';
 
+const animateOptions = {
+  duration: 100,
+  fill: 'forwards',
+  easing: 'ease'
+};
+
 customElements.define('view-source', class ViewSource extends HTMLElement {
   constructor() {
     super();
-    this.built = false;
-  }
+    this._built = false;
 
-  connectedCallback() {
-    if (this.built) {
-      return;
-    }
-    this.style.display = 'block';
-    const me = this;
-    const button = document.createElement('button');
-    button.style.width = '100%';
-    button.style.textAlign = 'left';
-    const spinnyArrow = document.createElement('div');
-    spinnyArrow.textContent = '\u25b6'; // BLACK RIGHT-POINTING TRIANGLE
-    spinnyArrow.style.display = 'inline-block';
-    const viewSourceWords = document.createElement('span');
-    viewSourceWords.textContent = 'View source';
-    viewSourceWords.style.marginLeft = '1em';
-    button.appendChild(spinnyArrow);
-    button.appendChild(viewSourceWords);
-    me.appendChild(button);
+    const shadowRoot = this.attachShadow({mode: 'open'});
+
+    shadowRoot.innerHTML = `
+      <link rel=stylesheet href="resources/highlight-default.css">
+      <style>
+        :host { display: block; }
+        button { width: 100%; text-align: left; }
+        #spinny-arrow { display: inline-block; }
+        #label { margin-left: 1em; }
+        #source {
+          overflow: hidden;
+          height: 0;
+          box-sizing: border-box;
+          padding-top: 0;
+          padding-bottom: 0;
+          margin: 0;
+        }
+      </style>
+      <button>
+        <span id="spinny-arrow">▶</span>
+        <span id="label">View source
+      </button>
+      <pre id="source"></pre>
+    `;
+
+
+    this._spinnyArrow = shadowRoot.querySelector('#spinny-arrow');
+    this._label = shadowRoot.querySelector('#label');
+    this._source = shadowRoot.querySelector('#source');
+
+    const button = shadowRoot.querySelector('button');
     let shown = false;
-    let source;
-    const animateOptions = {
-      duration: 100,
-      fill: 'forwards',
-      easing: 'ease'
-    };
-    function toggle() {
+    button.onclick = () => {
       if (shown) {
-        hideSource();
+        this.hide();
         shown = false;
         return;
       }
-      loadSource();
+
+      this.show();
       shown = true;
+    };
+  }
+
+  hide() {
+    this._spinnyArrow.animate({
+      transform: ['rotate(90deg)', 'rotate(0deg)']
+    }, animateOptions);
+
+    const currentHeight = this._source.clientHeight;
+    this._source.animate({
+      height: [`${currentHeight}px`, '0px'],
+      paddingTop: ['0.5em', '0'],
+      paddingBottom: ['0.5em', '0']
+    }, animateOptions);
+  }
+
+  show() {
+    this._spinnyArrow.animate({
+      transform: ['rotate(0deg)', 'rotate(90deg)']
+    }, animateOptions);
+
+    const currentHeight = this._source.clientHeight;
+    this._source.style.overflow = 'hidden';
+    this._source.animate({
+      height: ['0', 'auto'],
+      paddingTop: ['0', '0.5em'],
+      paddingBottom: ['0', '0.5em']
+    }, animateOptions);
+  }
+
+  async connectedCallback() {
+    if (this._built) {
+      return;
     }
-    function hideSource() {
-      spinnyArrow.animate({
-        transform: ['rotate(90deg)', 'rotate(0deg)']
-      }, animateOptions);
-      const currentHeight = source.clientHeight;
-      source.style.overflow = 'hidden';
-      source.animate({
-        height: [`${currentHeight}px`, '0px']
-      }, animateOptions);
-    }
-    function loadSource() {
-      spinnyArrow.animate({
-        transform: ['rotate(0deg)', 'rotate(90deg)']
-      }, animateOptions);
-      if (source) {
-        me.removeChild(source);
-        source = undefined;
-      }
-      source = document.createElement('fetch-code-with-progress');
-      me.appendChild(source);
-      source.load(me.getAttribute('src'));
-    }
-    me.addEventListener('click', toggle);
-    this.built = true;
+
+    const res = await fetch(location.href);
+    const text = await res.text();
+
+    const [,snippedText] = /\/\/ BEGIN SOURCE TO VIEW([\s\S]+)\/\/ END SOURCE TO VIEW/.exec(text);
+
+    this._source.textContent = snippedText.trim();
+    hljs.highlightBlock(this._source);
+    this._built = true;
   }
 });
