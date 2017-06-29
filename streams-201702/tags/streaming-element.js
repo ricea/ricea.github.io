@@ -29,6 +29,8 @@ customElements.define('streaming-element', class StreamingElement extends HTMLEl
 
       iframe.onload = () => {
         iframe.onload = null;
+        iframe.contentDocument.write('<streaming-element-inner>');
+        this.appendChild(iframe.contentDocument.querySelector('streaming-element-inner'));
         resolve(iframe);
       };
       iframe.src = '';
@@ -42,11 +44,6 @@ customElements.define('streaming-element', class StreamingElement extends HTMLEl
     }
 
     this.writable = new WritableStream({
-      start: async () => {
-        const iframe = await iframeReady;
-        iframe.contentDocument.write('<streaming-element-inner>');
-        this.appendChild(iframe.contentDocument.querySelector('streaming-element-inner'));
-      },
       async write(chunk) {
         const iframe = await iframeReady;
         iframe.contentDocument.write(chunk);

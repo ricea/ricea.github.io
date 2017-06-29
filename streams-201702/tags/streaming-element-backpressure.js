@@ -30,6 +30,8 @@ customElements.define('streaming-element-backpressure',
 
       iframe.onload = () => {
         iframe.onload = null;
+        iframe.contentDocument.write('<streaming-element-inner>');
+        this.appendChild(iframe.contentDocument.querySelector('streaming-element-inner'));
         resolve(iframe);
       };
       iframe.src = '';
@@ -62,11 +64,6 @@ customElements.define('streaming-element-backpressure',
     }
 
     this.writable = new WritableStream({
-      start: async () => {
-        const iframe = await iframeReady;
-        iframe.contentDocument.write('<streaming-element-inner>');
-        this.appendChild(iframe.contentDocument.querySelector('streaming-element-inner'));
-      },
       async write(chunk) {
         if (idlePromise === undefined) {
           startNewChunk();

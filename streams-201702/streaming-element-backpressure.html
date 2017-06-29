@@ -6,6 +6,7 @@
 <script src="transforms/text-encode-transform.js"></script>
 <script src="tags/streaming-element-backpressure.js"></script>
 <script src="resources/highlight.pack.js"></script>
+<script src="resources/web-animations.min.js"></script>
 <script src="tags/view-source.js"></script>
 
 <link rel=stylesheet href="resources/common.css">
@@ -29,7 +30,7 @@
 'use strict';
 const loadButton = document.querySelector('#load');
 const resetButton = document.querySelector('#reset');
-const target = document.querySelector('#target');
+const targetDiv = document.querySelector('#target');
 
 loadButton.onclick = async () => {
   loadButton.disabled = true;
@@ -48,12 +49,12 @@ async function fetchDirectlyIntoDOM() {
 
   await response.body
       .pipeThrough(new TextDecoder())
-      .pipeTo(target.writable);
+      .pipeTo(targetDiv.writable);
 }
 // END SOURCE TO VIEW
 
 resetButton.onclick = () => {
-  target.reset();
+  targetDiv.reset();
   loadButton.disabled = false;
 };
 </script>

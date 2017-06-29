@@ -7,6 +7,7 @@
 <script src="transforms/parse-json.js"></script>
 <script src="transforms/split-stream.js"></script>
 <script src="resources/highlight.pack.js"></script>
+<script src="resources/web-animations.min.js"></script>
 <script src="tags/view-source.js"></script>
 
 <link rel=stylesheet href="resources/common.css">
@@ -27,7 +28,7 @@
 'use strict';
 const loadButton = document.querySelector('#load');
 const resetButton = document.querySelector('#reset');
-const target = document.querySelector('#target');
+const targetDiv = document.querySelector('#target');
 const FIELDS =  ['Hash', 'Date', 'Author', 'Subject'];
 const FIELDS_LOWERCASE = FIELDS.map(string => string.toLowerCase());
 
@@ -75,7 +76,7 @@ async function fetchThenJSONToDOM() {
                                }
                              });
 
-  const table = createTable(target);
+  const table = createTable(targetDiv);
   return response.body
     .pipeThrough(new TextDecoder())
     .pipeThrough(splitStream('\n'))
@@ -91,7 +92,7 @@ loadButton.onclick = () => {
 };
 
 resetButton.onclick = () => {
-  target.innerHTML = '';
+  targetDiv.innerHTML = '';
   loadButton.disabled = false;
 };
 </script>
