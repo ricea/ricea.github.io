@@ -3,7 +3,7 @@
     animation-direction: alternate;
     animation-duration: 1s;
     animation-iteration-count: infinite;
-    animation-timing-function: ease;
+    animation-timing-function: linear;
     animation-name: spacing;
 }
 
