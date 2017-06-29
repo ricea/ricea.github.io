@@ -34,7 +34,12 @@ const target = document.querySelector('#target');
 // BEGIN SOURCE TO VIEW
 async function streamDirectlyIntoDOM() {
   const response = await fetch('data/commits.html',
-                               {mode: 'no-cors'});
+                               {
+                                 mode: 'same-origin',
+                                 headers: {
+                                   'Cache-Control': 'no-cache, no-store'
+                                 }
+                               });
 
   await response.body
       .pipeThrough(new TextDecoder())
